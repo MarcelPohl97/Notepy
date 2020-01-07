@@ -3,19 +3,21 @@ from tkinter import *
 
 
 class Window:
-    def __init__(self, width, height):
+    def __init__(self):
         self.root = Tk()
-        self.width = width
-        self.height = height
-        self.root.geometry(width + "x" + height)
-        self.background = Frame(self.root, bg="green")
-        self.background.place(width=800, height=600)
+        self.root.geometry("800x600")
+        self.root.resizable(0, 0)
+        self.root.title("NotePy")
+        self.root.configure(background='black')
+        self.header = Label(self.root, bg="orange", height=2)
+        self.header.pack(fill=X)
+        
         
 
 class Frames:
     def __init__(self):
-        self.notes_frame = Frame(window.background, bg="red", height=300, width=300, relief="sunken")
-        self.notes_frame.place(relwidth=0.3, relheight=0.3)
+        self.notes_frame = Frame(window.root, bg="red", height=300, width=300, relief="sunken")
+        self.notes_frame.place(width=400, height=400)
         self.note_title = Label(self.notes_frame, text=menu.add_title_frame.get(), bg="orange")
         self.note_title.place(relx=0, rely=0, relwidth=0.5, relheight=0.15)
         self.deleteB = Button(self.notes_frame, text="X", command=self.delete_frame, bg="blue")
@@ -44,10 +46,9 @@ class Frames:
         self.note_list.delete(self.note_list.curselection())
 
     def check_note(self):
-        global width
         self.get_note = self.note_list.curselection()
         self.note_list.itemconfig(self.get_note, bg="green")
-        print(menu.size.get())
+        
 
     def uncheck_note(self):
         self.get_note = self.note_list.curselection()
@@ -75,21 +76,35 @@ class DragNDrop:
 
 class Menu:
     def __init__(self):
-        self.add_note_frame = Button(window.background, width=3, height=1, bg="blue", command=self.add_frames)
+        self.add_note_frame = Button(window.root, width=3, height=1, bg="blue", command=self.add_frames)
         self.add_note_frame.pack()
-        self.add_title_frame = Entry(window.background)
+        self.add_title_frame = Entry(window.root)
         self.add_title_frame.pack()
         self.size_options = ["1920x1080", "1680x1050", "1440x900", "1280x800", "1024x768", "800x600"]
+        self.get_size = {"1920x1080": "1920x1080",
+                         "1680x1050": "1680x1050",
+                         "1440x900": "1440x900",
+                         "1280x800": "1280x800",
+                         "1024x768": "1024x768",
+                         "800x600": "800x600"}
         self.size = StringVar(window.root)
-        self.app_size = OptionMenu(window.background, self.size, *self.size_options)
+        self.app_size = OptionMenu(window.root, self.size, *self.size_options, command=self.set_window_size)
         self.app_size.pack()
+        
 
 
     def add_frames(self):
         frames.append(Frames())
+
+    def set_window_size(self, resolution):
+        action = self.get_size.get(resolution)
+        if action:
+            window.root.geometry(action)
+            window.root.resizable(0, 0)
+            
                 
         
-window = Window("1", "600")
+window = Window()
 
 frames = []
 
