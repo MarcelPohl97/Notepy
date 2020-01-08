@@ -12,7 +12,18 @@ class Window:
         self.header = Label(self.root, text="NotePy", font=("Arial", 14), fg="#FFFFFF", bg="#458131", height=2)
         self.header.pack(fill=X)
         
-        
+
+class Icons:
+    def __init__(self):
+        self.add = PhotoImage(file="check.png")
+        self.about = PhotoImage(file="about.png")
+        self.add_frame = PhotoImage(file="add_frame.png")
+        self.add_window = PhotoImage(file="add_window.png")
+        self.chat = PhotoImage(file="chat.png")
+        self.delete = PhotoImage(file="delete.png")
+        self.menu = PhotoImage(file="menu.png")
+        self.uncheck = PhotoImage(file="uncheck.png")
+        self.uncheck2 = PhotoImage(file="uncheck2.png")
 
 class Frames:
     def __init__(self):
@@ -20,19 +31,19 @@ class Frames:
         self.notes_frame.place(width=270, height=300)
         self.note_title = Label(self.notes_frame, text=menu.add_title_frame.get(), bg="#8F9297")
         self.note_title.place(relx=0, rely=0, relwidth=1, relheight=0.11)
-        self.deleteB = Button(self.notes_frame, text="X", command=self.delete_frame, bg="#8F9297")
+        self.deleteB = Button(self.notes_frame, text="X", image=icons.uncheck, command=self.delete_frame, bg="#8F9297")
         self.deleteB.place(rely=0.01, relx=0.89)
-        self.addB = Button(self.notes_frame, text="ADD NOTE", command=self.add_note, bg="#8F9297")
+        self.addB = Button(self.notes_frame, text="ADD NOTE", image=icons.add_frame, command=self.add_note, bg="#8F9297")
         self.addB.place(rely=0.91, relx=0.5)
-        self.deleteN = Button(self.notes_frame, text="DEL-N", command=self.del_Note, bg="#8F9297")
+        self.deleteN = Button(self.notes_frame, text="DEL-N", image=icons.delete, command=self.del_Note, bg="#8F9297")
         self.deleteN.place(rely=0.91, relx=0.70)
         self.note_list = Listbox(self.notes_frame, bg="#8F9297", relief="ridge")
         self.note_list.place(rely=0.2, relx=0.05, relheight=0.7, relwidth=0.9)
         self.entry_list = Entry(self.notes_frame)
         self.entry_list.place(rely=0.91, relx=0.05)
-        self.check_Note = Button(self.notes_frame, text="Check", command=self.check_note, bg="#8F9297")
+        self.check_Note = Button(self.notes_frame, text="Check", image=icons.add, command=self.check_note, bg="#8F9297")
         self.check_Note.place(rely=0.3, relx=0.53)
-        self.uncheck_Note = Button(self.notes_frame, text="Uncheck", command=self.uncheck_note, bg="#8F9297")
+        self.uncheck_Note = Button(self.notes_frame, text="Uncheck", image=icons.uncheck2, command=self.uncheck_note, bg="#8F9297")
         self.uncheck_Note.place(rely=0.3, relx=0.73)
 
     def delete_frame(self):
@@ -76,7 +87,7 @@ class DragNDrop:
 
 class Menu:
     def __init__(self):
-        self.add_note_frame = Button(window.root, width=3, height=1, bg="blue", command=self.add_frames)
+        self.add_note_frame = Button(window.root, bg="#EBECF0", image=icons.add_window, command=self.add_frames)
         self.add_note_frame.pack()
         self.add_title_frame = Entry(window.root)
         self.add_title_frame.pack()
@@ -90,6 +101,7 @@ class Menu:
         self.size = StringVar(window.root)
         self.app_size = OptionMenu(window.root, self.size, *self.size_options, command=self.set_window_size)
         self.app_size.pack()
+        self.app_size.config(indicatoron=0, image=icons.menu, bg='#EBECF0')
         
 
 
@@ -105,6 +117,8 @@ class Menu:
                 
         
 window = Window()
+
+icons = Icons()
 
 frames = []
 
