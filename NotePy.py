@@ -9,8 +9,7 @@ class Window:
         self.root.resizable(0, 0)
         self.root.title("NotePy")
         self.root.configure(background='#519839')
-        self.header = Label(self.root, text="NotePy", font=("Arial", 14), fg="#FFFFFF", bg="#458131", height=2)
-        self.header.pack(fill=X)
+
         
 
 class Icons:
@@ -24,6 +23,8 @@ class Icons:
         self.menu = PhotoImage(file="menu.png")
         self.uncheck = PhotoImage(file="uncheck.png")
         self.uncheck2 = PhotoImage(file="uncheck2.png")
+        self.change_bg = PhotoImage(file="color.png")
+        self.info = PhotoImage(file="info.png")
 
 class Frames:
     def __init__(self):
@@ -87,10 +88,8 @@ class DragNDrop:
 
 class Menu:
     def __init__(self):
-        self.add_note_frame = Button(window.root, bg="#EBECF0", image=icons.add_window, command=self.add_frames)
-        self.add_note_frame.pack()
-        self.add_title_frame = Entry(window.root)
-        self.add_title_frame.pack()
+        self.header = Label(window.root, text="NotePy", font=("Arial", 14), fg="#FFFFFF", bg="#458131", height=2)
+        self.header.pack(fill=X)
         self.size_options = ["1920x1080", "1680x1050", "1440x900", "1280x800", "1024x768", "800x600"]
         self.get_size = {"1920x1080": "1920x1080",
                          "1680x1050": "1680x1050",
@@ -99,10 +98,20 @@ class Menu:
                          "1024x768": "1024x768",
                          "800x600": "800x600"}
         self.size = StringVar(window.root)
-        self.app_size = OptionMenu(window.root, self.size, *self.size_options, command=self.set_window_size)
-        self.app_size.pack()
+        self.app_size = OptionMenu(self.header, self.size, *self.size_options, command=self.set_window_size)
+        self.app_size.pack(side=RIGHT, padx=1.5)
         self.app_size.config(indicatoron=0, image=icons.menu, bg='#EBECF0')
-        
+        self.add_note_frame = Button(self.header, bg="#EBECF0", image=icons.add_window, command=self.add_frames)
+        self.add_note_frame.pack(side=RIGHT, padx=1.5)
+        self.add_title_frame = Entry(self.header, width=25)
+        self.add_title_frame.pack(side=RIGHT, padx=1.5)
+        self.about = Button(self.header, bg="#EBECF0", image=icons.about)
+        self.about.pack(side=LEFT)
+        self.info = Button(self.header, bg="#EBECF0", image=icons.info)
+        self.info.pack(side=LEFT)
+        self.color_change= OptionMenu(self.header, self.size, *self.size_options)
+        self.color_change.pack(side=LEFT, padx=1.5)
+        self.color_change.config(indicatoron=0, image=icons.change_bg, bg='#EBECF0')
 
 
     def add_frames(self):
