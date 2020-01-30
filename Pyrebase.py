@@ -47,18 +47,14 @@ class Database:
             print(f"Hello {self.user_id_query.val()} your logged in now")
 
     def get_trellpy_pads(self):
+        self.trellpads = []
         for self.trellpypads in self.trellpy_pads_query:
-            self.trellpads = []
             self.trellpads.append(self.trellpypads.key())
-            self.trellpy_pads_entry_query = self.db.child("company").child(self.company_name).child("company_trellpypads").child(self.trellpypads.key()).get()
-            for self.trellpypads_entry in self.trellpy_pads_entry_query.each():
-                self.trellpads.append(self.trellpypads_entry.val())
+            #self.trellpy_pads_entry_query = self.db.child("company").child(self.company_name).child("company_trellpypads").child(self.trellpypads.key()).get()
+            #for self.trellpypads_entry in self.trellpy_pads_entry_query.each():
+                #self.trellpads.append(self.trellpypads_entry.val())
             print(self.trellpads)
 
-database = Database()
-database.login_details()
-database.database_querys()
-database.login()
-database.get_trellpy_pads()
+
 
 

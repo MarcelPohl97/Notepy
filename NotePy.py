@@ -1,4 +1,7 @@
 from tkinter import *
+from Pyrebase import Database
+import pyrebase
+
 
 
 
@@ -9,6 +12,7 @@ class Window:
         self.root.resizable(0, 0)
         self.root.title("NotePy")
         self.root.configure(background='#519839')
+        
 
         
 
@@ -27,10 +31,11 @@ class Icons:
         self.info = PhotoImage(file="info.png")
 
 class Frames:
-    def __init__(self):
+    def __init__(self, title):
+        self.title = title
         self.notes_frame = Frame(window.root, bg="#343841", relief="sunken")
         self.notes_frame.place(width=270, height=300)
-        self.note_title = Label(self.notes_frame, text=menu.add_title_frame.get(), anchor="w", bg="#8F9297")
+        self.note_title = Label(self.notes_frame, text=self.title, anchor="w", bg="#8F9297")
         self.note_title.place(relx=0, rely=0, relwidth=1, relheight=0.11)
         self.deleteB = Button(self.note_title, text="X", image=icons.uncheck, command=self.delete_frame, bg="#8F9297")
         self.deleteB.pack(side=RIGHT)
@@ -46,21 +51,44 @@ class Frames:
         self.check_Note.place(rely=0.12, relx=0.05)
         self.uncheck_Note = Button(self.notes_frame, text="Uncheck", image=icons.uncheck2, command=self.uncheck_note, bg="#8F9297")
         self.uncheck_Note.place(rely=0.12, relx=0.163)
+        self.current_notes = 0
 
     def delete_frame(self):
+        database.delete_trellpy_pad(self.note_title["text"])
         self.notes_frame.destroy()
         frames.remove(self)
 
     def add_note(self):
         self.note_list.insert(END, self.entry_list.get())
+        database.add_update_trellpy_pad_entry(menu.add_title_frame.get(), self.entry_list.get())
 
     def del_Note(self):
+        database.delete_trellpy_pad_entry(menu.add_title_frame.get(), self.note_list.get(self.note_list.curselection()))
         self.note_list.delete(self.note_list.curselection())
+
+    def del_listbox_entry(self):
+        self.note_list.delete('0','end')
+
+    def check_new_notes(self):
+        pass
+
+    def update_listbox_entry(self):
+        print("Updated the Listbox")
+
+    def auto_add_note(self):
+        self.check_new_notes()
+        if self.current_notes < self.new_notes:
+            self.del_listbox_entry()
+            self.update_listbox_entry()
+            self.current_notes = self.new_notes
+
+        else:
+            print("Checking for Update")
+
 
     def check_note(self):
         self.get_note = self.note_list.curselection()
         self.note_list.itemconfig(self.get_note, bg="green")
-        
 
     def uncheck_note(self):
         self.get_note = self.note_list.curselection()
@@ -120,12 +148,29 @@ class Menu:
         self.color_change= OptionMenu(self.header, self.background, *self.get_colors, command=self.change_bg)
         self.color_change.pack(side=LEFT)
         self.color_change.config(indicatoron=0, image=icons.change_bg, bg='#EBECF0')
-        self.chat_open = Button(self.header, bg="#EBECF0", image=icons.chat)
+        self.chat_open = Button(self.header, bg="#EBECF0", image=icons.chat, command=self.auto_add_frames)
         self.chat_open.pack(side=LEFT, padx=1)
+        self.trellpads_len = 0
 
-
+    
     def add_frames(self):
-        frames.append(Frames())
+        frames.append(Frames(menu.add_title_frame.get()))
+        database.add_new_trellpy_pad(menu.add_title_frame.get())
+
+    def auto_add_frames(self):
+        database.database_querys()
+        database.get_trellpy_pads()
+        print(len(database.trellpads))
+        print(self.trellpads_len)
+        if len(database.trellpads) > self.trellpads_len:
+            for x in frames:
+                frames.remove(x)
+            for i in database.trellpads:
+                frames.append(Frames(i))
+                database.add_new_trellpy_pad(i)
+                self.trellpads_len = self.trellpads_len + 1
+        else:
+            pass
 
     def set_window_size(self, resolution):
         action = self.get_size.get(resolution)
@@ -139,8 +184,10 @@ class Menu:
             self.header["bg"] = self.background_color[0]
             window.root.configure(bg=self.background_color[1])
             
-                
-        
+database = Database()
+database.login_details()
+database.database_querys()
+
 window = Window()
 
 icons = Icons()
