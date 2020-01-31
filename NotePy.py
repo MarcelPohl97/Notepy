@@ -160,11 +160,11 @@ class Menu:
     def auto_add_frames(self):
         database.database_querys()
         database.get_trellpy_pads()
-        print(len(database.trellpads))
-        print(self.trellpads_len)
         if len(database.trellpads) > self.trellpads_len:
             for x in frames:
+                x.notes_frame.destroy()
                 frames.remove(x)
+
             for i in database.trellpads:
                 frames.append(Frames(i))
                 database.add_new_trellpy_pad(i)
